@@ -1,8 +1,7 @@
-import Head from 'next/head'
-import Image from 'next/image'
-
+import { Grid } from '@/components/Grid'
 import { Card } from 'antd'
 import Meta from 'antd/lib/card/Meta'
+import Link from 'next/link'
 
 type NavigationPage = {
   title: string
@@ -33,7 +32,7 @@ const NavigationMap: NavigationPage[] = [ //? In the future this could be an API
   },
   {
     title: 'Service orders',
-    description: 'List all service orders.',
+    description: 'List all service orders.', //TODO, isso aqui vai ser um calendario?
     src: '/orders.png'
   },
 ]
@@ -41,19 +40,20 @@ const NavigationMap: NavigationPage[] = [ //? In the future this could be an API
 export default function Home() {
   return (
     <>
-      <div className='p-3 grid grid-cols-2 md:grid-cols-3 gap-6'>
-        {NavigationMap.map(({ src, ...meta }, index) => (
-          <Card
-            key={meta.title}
-            hoverable
-            bodyStyle={{ padding: 0 }}
-            className={`hover:bg-slate-200 justify-self-center w-[9.375rem] lg:w-[14rem] ${index == NavigationMap.length - 2 ? 'ml-0 md:ml-[100%]' : ''} ${index == NavigationMap.length - 1 ? 'ml-[100%]' : ''}`}
-            cover={<img alt="Cog representing assets" src={src} />}
-          >
-            <Meta className='p-4 pb-5 lg:p-6' {...meta} />
-          </Card>
+      <Grid>
+        {NavigationMap.map(({ src, ...meta }) => (
+          <Link key={meta.title} href="/assets">
+            <Card
+              hoverable
+              bodyStyle={{ padding: 0 }}
+              className={`hover:bg-slate-200 justify-self-center w-[9.375rem] lg:w-[14rem]`}
+              cover={<img alt={meta.title} src={src} />}
+            >
+              <Meta className='p-4 pb-5 lg:p-6' {...meta} />
+            </Card>
+          </Link>
         ))}
-      </div>
+      </Grid>
     </>
   )
 }
