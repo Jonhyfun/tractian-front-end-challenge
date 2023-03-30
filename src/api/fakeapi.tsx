@@ -4,7 +4,7 @@ const { defaultGet } = new Crud('https://my-json-server.typicode.com/tractian/fa
 
 
 export type HealthStatus = {
-  status: "inOperation" | "inDowntime" | "inAlert" | "unplannedStop",
+  status: "inOperation" | "inDowntime" | "inAlert" | "plannedStop" | "unplannedStop",
   timestamp: string
 }
 

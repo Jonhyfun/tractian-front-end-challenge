@@ -5,6 +5,8 @@ import { Tractian } from '@/components/Icons/Tractian'
 import type { AppProps } from 'next/app'
 import type { PropsWithChildren } from 'react'
 
+import NextNProgress from 'nextjs-progressbar';
+
 function Layout({ children }: PropsWithChildren) {
   return (
     <main className='w-full pt-12 min-h-screen flex justify-center items-center bg-gradient-to-l from-blue-600 to-blue-900'>
@@ -21,6 +23,7 @@ function Layout({ children }: PropsWithChildren) {
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <Layout>
+      <NextNProgress />
       <Component {...pageProps} />
     </Layout>
   )
