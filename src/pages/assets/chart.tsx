@@ -72,7 +72,7 @@ export default function ChartView({ assets }: ServerSideReturn) {
   }, [dates, series])
 
   return (
-    <ContentLayout title="Assets Chart" description="Click any legend to hide/show an asset from the graph." previousPage="/" >
+    <ContentLayout title="Assets Chart" description="Click any legend to hide/show an asset from the graph." previousPage >
       {({ Header, Body }) => (
         <>
           <Header>

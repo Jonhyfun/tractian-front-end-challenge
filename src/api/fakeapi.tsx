@@ -2,6 +2,10 @@ import { Crud } from "./base";
 
 const { defaultGet } = new Crud('https://my-json-server.typicode.com/tractian/fake-api')
 
+type DBObject = {
+  name: string
+  id: number
+}
 
 export type HealthStatus = {
   status: "inOperation" | "inDowntime" | "inAlert" | "plannedStop" | "unplannedStop",
@@ -14,16 +18,14 @@ type Metric = {
   totalUptime: number
 }
 
-export type Asset = {
+export type Asset = DBObject & {
   assignedUserIds: number[],
   companyId: number,
   healthHistory: HealthStatus[],
-  healthscore: number, //todo green to red
-  id: number,
+  healthscore: number,
   image: string,
   metrics: Metric,
   model: string,
-  name: string,
   sensors: string[]
   specifications: {
     maxTemp: number,
@@ -34,4 +36,22 @@ export type Asset = {
   unitId: number
 }
 
-export const GetAssets = (assetId?: string) => defaultGet<Asset[]>(assetId ? `/assets/${assetId}` : '/assets')
+export const GetAssets = () => defaultGet<Asset[]>('/assets')
+
+export type User = DBObject & {
+  companyId: number,
+  unitId: number
+  email: string,
+}
+
+export const GetUsers = () => defaultGet<User[]>('/users');
+
+export type Unit = DBObject & {
+  companyId: number,
+}
+
+export const GetUnits = () => defaultGet<Unit[]>('/units');
+
+export type Company = DBObject
+
+export const GetCompanies = () => defaultGet<Company[]>('/companies')

@@ -6,6 +6,7 @@ import type { AppProps } from 'next/app'
 import type { PropsWithChildren } from 'react'
 
 import NextNProgress from 'nextjs-progressbar';
+import { Toaster } from 'react-hot-toast'
 
 function Layout({ children }: PropsWithChildren) {
   return (
@@ -24,6 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Layout>
       <NextNProgress />
+      <Toaster position='bottom-center' />
       <Component {...pageProps} />
     </Layout>
   )

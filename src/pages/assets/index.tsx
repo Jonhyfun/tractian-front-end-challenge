@@ -1,9 +1,9 @@
 import { GetServerSideProps } from "next"
 import { useState, useEffect } from "react"
-import { Asset, GetAssets } from "@/api/fakeapi"
-import { Grid, GridHeader } from "@/components/Grid"
+import { Asset, GetAssets, GetUsers, User } from "@/api/fakeapi"
 import { SortByHealth } from "@/utils/assets/sorting"
 import { AssetStatusMap, getHealthColor } from "@/utils/assets/display"
+import { Grid } from "@/components/Grid"
 import { Card } from "antd"
 
 import Link from "next/link"
@@ -16,19 +16,21 @@ import { BsFillBarChartFill } from "react-icons/bs"
 
 type ServerSideReturn = {
   assets: Asset[]
+  users: User[]
 }
 
 export const getServerSideProps: GetServerSideProps<ServerSideReturn> = async (context) => {
-  const assets = await GetAssets();
+  const [assets, users] = await Promise.all([GetAssets(), GetUsers()]);
 
   return {
     props: {
       assets,
+      users
     }
   }
 }
 
-export default function Assets({ assets: allAssets }: ServerSideReturn) {
+export default function Assets({ assets: allAssets, users }: ServerSideReturn) {
   const [searchFilter, setSearchFilter] = useState<string>('');
   const [assets, setAssets] = useState(allAssets);
 
@@ -42,7 +44,7 @@ export default function Assets({ assets: allAssets }: ServerSideReturn) {
   }, [allAssets, searchFilter])
 
   return (
-    <ContentLayout title="Assets" description="Click any asset to see more info." previousPage="/" >
+    <ContentLayout title="Assets" description="Click any asset to see more info." previousPage >
       {({ Header, Body }) => (
         <>
           <Header>
@@ -59,21 +61,29 @@ export default function Assets({ assets: allAssets }: ServerSideReturn) {
             {assets.length > 0 ? (
               <Grid className="p-3 ">
                 <>
-                  {SortByHealth(assets).map(({ image, name, id, status, healthscore }) => (
+                  {SortByHealth(assets).map(({ image, name, id, status, healthscore, assignedUserIds }) => (
                     <Link key={id} className="place-self-center contents" href="/assets">
                       <Card
                         hoverable
                         bodyStyle={{ padding: 0 }}
                         className={`hover:bg-slate-200 overflow-hidden justify-self-center w-full md:max-w-[14rem]`}
-                        cover={<Image width={250} height={224} className="object-cover" alt={name} src={image} />}
+                        cover={<Image priority width={250} height={224} className="object-cover" alt={name} src={image} />}
                       >
                         <Meta className='p-4 pb-5 lg:p-6' title={name} description={(
-                          <div className="flex text-xs lg:text-base flex-col gap-2 font-bold">
+                          <div className="flex text-xs lg:text-sm flex-col gap-2 font-bold">
                             <div>
                               <span className="text-black">Status: </span>{AssetStatusMap[status]}
                             </div>
                             <div>
                               <span className="text-black">Health: </span><span style={{ color: getHealthColor(healthscore) }}>{healthscore}%</span>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              <span className="text-black">Assigned Users: </span>
+                              {assignedUserIds.map((userId, index) => (
+                                <Link onClick={(e) => e.stopPropagation()} target="_blank" href={`/users/${userId}`} className="contents" key={`${userId}-${index}`}>
+                                  {users.find(({ id }) => id == userId)?.name + (index === assignedUserIds.length - 1 ? '' : ', ')}
+                                </Link>
+                              ))}
                             </div>
                           </div>
                         )} />

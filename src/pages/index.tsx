@@ -6,6 +6,7 @@ import Link from 'next/link'
 type NavigationPage = {
   title: string
   description: string
+  href: string
   src: string
 }
 
@@ -13,26 +14,31 @@ const NavigationMap: NavigationPage[] = [ //? In the future this could be an API
   {
     title: 'Assets',
     description: 'List all assets',
+    href: '/assets',
     src: '/cog.png'
   },
   {
     title: 'Users',
     description: 'List all users.',
+    href: '/users',
     src: '/users.png'
   },
   {
     title: 'Units',
     description: 'List all units.',
+    href: '/assets',
     src: '/industry.png'
   },
   {
     title: 'Companies',
     description: 'List all companies.',
+    href: '/assets',
     src: '/companies.png'
   },
   {
     title: 'Service orders',
     description: 'List all service orders.', //TODO, isso aqui vai ser um calendario?
+    href: '/assets',
     src: '/orders.png'
   },
 ]
@@ -41,8 +47,8 @@ export default function Home() {
   return (
     <>
       <Grid>
-        {NavigationMap.map(({ src, ...meta }) => (
-          <Link key={meta.title} href="/assets">
+        {NavigationMap.map(({ src, href, ...meta }) => (
+          <Link key={meta.title} href={href}>
             <Card
               hoverable
               bodyStyle={{ padding: 0 }}
