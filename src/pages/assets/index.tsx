@@ -11,10 +11,10 @@ import Meta from "antd/lib/card/Meta"
 
 import { BsFillBarChartFill } from "react-icons/bs"
 import { Grid } from "@/components/Grid"
-import { Button, Card, Dropdown } from "antd"
+import { Button, Card, Dropdown, Popover } from "antd"
 import { ContentLayout } from "@/components/ContentLayout"
 import { useFilterModal } from "@/hooks/filterModal"
-import { FaPlus } from "react-icons/fa"
+import { FaInfo, FaPlus } from "react-icons/fa"
 import { EditableLabel } from "@/components/EditableLabel"
 import { useTaskModal } from "@/hooks/taskModal"
 
@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideReturn> = async (c
   }
 }
 
-function AssetCard({ assetProps: { name, image, status, healthscore, unitId, assignedUserIds }, units, users, WaitForConfirmation }: { assetProps: Asset, units: Unit[], users: User[], WaitForConfirmation: (userFilter: number[]) => Promise<number> }) {
+function AssetCard({ assetProps: { name, image, status, healthscore, unitId, assignedUserIds, sensors, specifications }, units, users, WaitForConfirmation }: { assetProps: Asset, units: Unit[], users: User[], WaitForConfirmation: (userFilter: number[]) => Promise<number> }) {
   const [currentStatus, setCurrentStatus] = useState(status);
   const [currentUnit, setCurrentUnit] = useState(unitId);
 
@@ -87,6 +87,55 @@ function AssetCard({ assetProps: { name, image, status, healthscore, unitId, ass
                 <Dropdown className="cursor-pointer" menu={{ items: units.map(({ name, id }) => ({ label: name, key: id, onClick: () => setCurrentUnit(id as any) })) }} trigger={['click']}>
                   <span>{units.find(({ id }) => id === currentUnit)!.name}</span>
                 </Dropdown>
+              </div>
+              <div className="flex gap-1 items-center">
+                <span className="text-black">Specifications:</span>
+                <Popover content={(
+                  <div className="flex flex-col gap-2">
+                    {!!specifications.maxTemp && (
+                      <div className="flex flex-col">
+                        <span className="font-bold">Max Temperature:</span>
+                        <EditableLabel key={`label-${name}-${specifications.maxTemp}`} type="number" className="items-center" initialText={specifications.maxTemp.toString()}>
+                          {({ content }) => (
+                            <span>{content}</span>
+                          )}
+                        </EditableLabel>
+                      </div>
+                    )}
+                    {!!specifications.power && (
+                      <div className="flex flex-col">
+                        <span className="font-bold">Power:</span>
+                        <EditableLabel key={`label-${name}-${specifications.power}`} type="number" className="items-center" initialText={specifications.power.toString()}>
+                          {({ content }) => (
+                            <span>{content}</span>
+                          )}
+                        </EditableLabel>
+                      </div>
+                    )}
+                    {!!specifications.rpm && (
+                      <div className="flex flex-col">
+                        <span className="font-bold">RPM:</span>
+                        <EditableLabel key={`label-${name}-${specifications.rpm}`} type="number" className="items-center" initialText={specifications.rpm.toString()}>
+                          {({ content }) => (
+                            <span>{content}</span>
+                          )}
+                        </EditableLabel>
+                      </div>
+                    )}
+                  </div>
+                )} trigger="click">
+                  <Button><FaInfo /></Button>
+                </Popover>
+              </div>
+              <div>
+                <EditableLabel className="items-center" initialText={sensors.join(', ')}>
+                  {({ content }) => (
+                    <>
+                      <span className="text-black">Sensors: </span>
+                      <span>{content}</span>
+                    </>
+                  )}
+                </EditableLabel>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-black">Assigned Users: </span>

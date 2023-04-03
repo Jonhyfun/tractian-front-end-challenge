@@ -28,14 +28,14 @@ export function EditableLabel({ initialText, parentClassName, textClassName, cla
       {editing ? (
         <Space.Compact style={{ width: '100%' }}>
           <Input ref={inputRef} type={type} onChange={onChange ? (e) => onChange(e.target.value!) : undefined} defaultValue={initialText} />
-          <Button onClick={HandleEdit} type="primary">Save</Button>
+          <Button onClick={(e) => { e.stopPropagation(); HandleEdit() }} type="primary">Save</Button>
         </Space.Compact>
       ) : (
         <div className={`flex gap-2 ${className}`}>
           <span className={textClassName}>
             {children({ content: currentText })}
           </span>
-          <FaEdit className="flex-shrink-0 cursor-pointer hover:text-link" onClick={() => setEditing(true)} />
+          <FaEdit className="flex-shrink-0 cursor-pointer hover:text-link" onClick={(e) => { e.stopPropagation(); setEditing(true) }} />
         </div>
       )}
     </div>
