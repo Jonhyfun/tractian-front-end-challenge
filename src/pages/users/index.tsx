@@ -112,20 +112,19 @@ export default function Users({ users, assets, units, companies }: ServerSideRet
   }, [router.isReady, router.query])
 
   return (
-    <ContentLayout
-      title="Users"
-      description={(
-        <div className="flex flex-col gap-1">
-          <span>Click any info to copy it to the clipboard.</span>
-          <span>Click any asset to go to its page.</span>
-        </div>
-      )}
-      previousPage
-    >
+    <ContentLayout>
       {({ Header, Body }) => (
         <Fragment>
           {ModalComponent}
-          <Header>
+          <Header title="Users"
+            description={(
+              <div className="flex flex-col gap-1">
+                <span>Click any info to copy it to the clipboard.</span>
+                <span>Click any asset to go to its page.</span>
+              </div>
+            )}
+            previousPage
+          >
             <div className="p-3 w-full md:w-auto flex flex-col gap-2 justify-center bg-[#00000060] backdrop-blur rounded-lg border-white border-solid border-2">
               <span className="text-base md:text-lg font-semibold text-white">Filter by company/unit/asset:</span>
               <Select
