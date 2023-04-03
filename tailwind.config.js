@@ -5,7 +5,11 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        link: '#69b1ff'
+      }
+    },
   },
   corePlugins: {
     preflight: false

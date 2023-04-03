@@ -3,13 +3,12 @@ import { ContentLayout } from '@/components/ContentLayout';
 import { AssetGraphMap, AssetNameToLabel } from '@/utils/assets/display';
 import { AssetsOrganizer } from '@/utils/assets/sorting';
 import { getKeyByValue } from '@/utils/query';
-import { Select } from 'antd';
 import * as Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 
-import { useRef, useMemo, useState, useEffect } from 'react';
+import { useRef, useMemo } from 'react';
 
 import { BsFillGrid3X3GapFill } from 'react-icons/bs'
 
@@ -72,10 +71,10 @@ export default function ChartView({ assets }: ServerSideReturn) {
   }, [dates, series])
 
   return (
-    <ContentLayout title="Assets Chart" description="Click any legend to hide/show an asset from the graph." previousPage >
+    <ContentLayout>
       {({ Header, Body }) => (
         <>
-          <Header>
+          <Header title="Assets Chart" description="Click any legend to hide/show an asset from the graph." previousPage>
             <Link href="/assets" className="p-3 flex-1 md:flex-none md:mr-[35%] flex-shrink-0 h-[inherit] flex items-center justify-center flex-col gap-2 bg-[#00000060] backdrop-blur rounded-lg border-white border-solid border-2">
               <BsFillGrid3X3GapFill className='w-5 h-5 md:w-7 md:h-7' />
               <span className='text-lg md:text-2xl'>Grid Mode</span>

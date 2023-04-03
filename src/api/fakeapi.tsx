@@ -77,4 +77,4 @@ export type WorkOrder = {
   title: string
 }
 
-export const GetWorkOrders = () => defaultGet<WorkOrder[]>('workorders');
+export const GetWorkOrders = () => defaultGet<WorkOrder[]>('/workorders');

@@ -4,25 +4,34 @@ import { GridTitle } from "./Grid/GridHeader"
 
 type ChildRenderFunction<T = unknown> = (props: PropsWithChildren & T) => JSX.Element;
 
-interface IContentLayout extends GridTitle {
-  children: (props: { Header: ChildRenderFunction, Body: ChildRenderFunction<{ className?: string }> }) => ReactElement
+type HeaderType<> = ChildRenderFunction<GridTitle>;
+
+type BodyType = ChildRenderFunction<{ className?: string }>;
+
+interface IContentLayout {
+  children: (props: { Header: HeaderType, Body: BodyType }) => ReactElement
 }
 
-export function ContentLayout({ children, ...headerProps }: IContentLayout) {
-  const Header = useCallback(({ children }: PropsWithChildren) => (
-    <div className="flex flex-col md:flex-row justify-between gap-3 px-3">
+const Header: HeaderType = ({ children, ...headerProps }) => {
+  return (
+    <div className="flex flex-col md:flex-row justify-between gap-3 px-3" >
       <GridHeader {...headerProps} />
       <div className="flex flex-row justify-between gap-3 md:contents">
         {children}
       </div>
     </div>
-  ), [headerProps])
+  )
+}
 
-  const Body = useCallback(({ children, className }: PropsWithChildren<{ className?: string }>) => (
+const Body: BodyType = ({ children, className }) => {
+  return (
     <div className={`h-full ${className}`}>
       {children}
     </div>
-  ), [])
+  )
+}
+
+export function ContentLayout({ children }: IContentLayout) {
 
   const LayoutFunction = useCallback(({ children }: PropsWithChildren) => {
     return (

@@ -1,18 +1,18 @@
 import { GetServerSideProps } from "next"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Asset, GetAssets, GetUsers, User } from "@/api/fakeapi"
 import { SortByHealth } from "@/utils/assets/sorting"
 import { AssetStatusMap, getHealthColor } from "@/utils/assets/display"
-import { Grid } from "@/components/Grid"
-import { Card } from "antd"
 
 import Link from "next/link"
 import Image from "next/image"
 import Meta from "antd/lib/card/Meta"
 
 import Search from "antd/lib/input/Search"
-import { ContentLayout } from "@/components/ContentLayout"
 import { BsFillBarChartFill } from "react-icons/bs"
+import { Grid } from "@/components/Grid"
+import { Card } from "antd"
+import { ContentLayout } from "@/components/ContentLayout"
 
 type ServerSideReturn = {
   assets: Asset[]
@@ -44,10 +44,10 @@ export default function Assets({ assets: allAssets, users }: ServerSideReturn) {
   }, [allAssets, searchFilter])
 
   return (
-    <ContentLayout title="Assets" description="Click any asset to see more info." previousPage >
+    <ContentLayout>
       {({ Header, Body }) => (
         <>
-          <Header>
+          <Header title="Assets" description="Click any asset to see more info." previousPage>
             <Link href="/assets/chart" className="md:flex-shrink-0 flex-1 lg:flex-none p-3 h-[inherit] flex items-center justify-center flex-col gap-2 bg-[#00000060] backdrop-blur rounded-lg border-white border-solid border-2">
               <BsFillBarChartFill className='w-5 h-5 md:w-7 md:h-7' />
               <span className='text-lg md:text-2xl text-center'>Chart Mode</span>

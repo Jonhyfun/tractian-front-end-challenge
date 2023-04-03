@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from "react"
 
 import React, { useState } from 'react';
-import { Checkbox, Divider, Modal, ModalProps, Radio } from 'antd';
+import { Checkbox, Divider, Modal, ModalProps, Radio, Segmented } from 'antd';
 
 type OptionsModalProps = {
   modalProps?: ModalProps
@@ -64,11 +64,7 @@ export function useOptionsModal({ options, modalProps }: OptionsModalProps) {
       <Modal closable={false} onCancel={Confirm} open={!!res} {...modalProps}>
         <div className="flex flex-col gap-4 min-h-[12.5rem] pb-5">
           <div className="flex flex-col">
-            <Radio.Group value={selectedOptionTab} onChange={(e) => setSelectedOptionTab(e.target.value)}>
-              {Object.keys(options).map((option) => (
-                <Radio.Button key={`tab-${option}`} value={option}>{option}</Radio.Button>
-              ))}
-            </Radio.Group>
+            <Segmented value={selectedOptionTab} onChange={(value) => setSelectedOptionTab(value as string)} options={Object.keys(options)} block />
             <Divider />
           </div>
           <div className="flex flex-col gap-2">

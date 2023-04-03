@@ -7,7 +7,7 @@ import { Button, Card, Select } from "antd"
 
 import Meta from "antd/lib/card/Meta"
 
-import { useMemo, useState, MouseEvent, Fragment } from 'react';
+import { useMemo, useState, MouseEvent, Fragment, useEffect } from 'react';
 import Link from "next/link";
 import Image from "next/image";
 import { getHealthColor } from "@/utils/assets/display";
@@ -19,6 +19,7 @@ import { useOptionsModal } from "@/hooks/optionsModal";
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 
 import { GrFormClose } from 'react-icons/gr'
+import { useRouter } from "next/router";
 
 
 type ServerSideReturn = {
@@ -64,6 +65,8 @@ const tagRender = (props: Omit<CustomTagProps, 'onClose'> & { onClose: (label: s
 export default function Users({ users, assets, units, companies }: ServerSideReturn) {
   const [searchFilter, setSearchFilter] = useState<string[]>([]);
 
+  const router = useRouter();
+
   const { ModalComponent, WaitForOptionSelect, RemoveOption, Confirm, CloseModal } = useOptionsModal({
     options: {
       Users: users.map(({ name }) => name),
@@ -99,6 +102,14 @@ export default function Users({ users, assets, units, companies }: ServerSideRet
       ))
     )
   ), [searchFilter, usersWithReferences])
+
+  useEffect(() => {
+    if (router.isReady) {
+      if (router.query.unit) {
+        setSearchFilter([router.query.unit as string])
+      }
+    }
+  }, [router.isReady, router.query])
 
   return (
     <ContentLayout
