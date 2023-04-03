@@ -3,22 +3,19 @@ import { ContentLayout } from "@/components/ContentLayout";
 import { GetServerSideProps } from "next";
 
 import { Grid } from "@/components/Grid"
-import { Button, Card, Select } from "antd"
+import { Button, Card } from "antd"
 
 import Meta from "antd/lib/card/Meta"
 
-import { useMemo, useState, MouseEvent, Fragment, useEffect } from 'react';
+import { useMemo, Fragment } from 'react';
 import Link from "next/link";
 import Image from "next/image";
 import { getHealthColor } from "@/utils/assets/display";
 
 import { FiExternalLink } from 'react-icons/fi'
 import { HandleCopy } from "@/utils/assets/interaction";
-import { useOptionsModal } from "@/hooks/optionsModal";
+import { useFilterModal } from "@/hooks/optionsModal";
 
-import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
-
-import { GrFormClose } from 'react-icons/gr'
 import { useRouter } from "next/router";
 
 
@@ -42,37 +39,16 @@ export const getServerSideProps: GetServerSideProps<ServerSideReturn> = async (c
   }
 }
 
-const tagRender = (props: Omit<CustomTagProps, 'onClose'> & { onClose: (label: string) => void }) => {
-  const { label, value, closable, onClose } = props;
-
-  const handleClick = (e: MouseEvent<HTMLSpanElement>) => {
-    e.stopPropagation();
-    onClose(label as string);
-  };
-
-  return (
-    <span key={value} className="ant-select-selection-item">
-      {label}
-      {closable && (
-        <span onClick={handleClick} className="ml-1 ant-select-selection-item-remove flex items-center">
-          <GrFormClose size={14} />
-        </span>
-      )}
-    </span>
-  );
-};
-
 export default function Users({ users, assets, units, companies }: ServerSideReturn) {
-  const [searchFilter, setSearchFilter] = useState<string[]>([]);
-
   const router = useRouter();
 
-  const { ModalComponent, WaitForOptionSelect, RemoveOption, Confirm, CloseModal } = useOptionsModal({
+  const { ModalComponent, SearchComponent, selectedOptions, setSelectedOptions, WaitForOptionSelect, RemoveOption, Confirm, CloseModal } = useFilterModal({
     options: {
-      Users: users.map(({ name }) => name),
-      Companies: companies.map(({ name }) => name),
-      Units: units.map(({ name }) => name)
+      users: users.map(({ name }) => name),
+      companies: companies.map(({ name }) => name),
+      units: units.map(({ name }) => name)
     },
+    optionLabels: ['Users', 'Companies', 'Units'],
     modalProps: {
       footer: [
         <Button key="back" onClick={() => CloseModal()}>Cancel</Button>,
@@ -80,6 +56,8 @@ export default function Users({ users, assets, units, companies }: ServerSideRet
       ]
     }
   });
+
+  const searchFilter = useMemo(() => Object.values(selectedOptions).flat(), [selectedOptions])
 
   const usersWithReferences = useMemo(() => (
     users.map((user) => (
@@ -103,14 +81,6 @@ export default function Users({ users, assets, units, companies }: ServerSideRet
     )
   ), [searchFilter, usersWithReferences])
 
-  useEffect(() => {
-    if (router.isReady) {
-      if (router.query.unit) {
-        setSearchFilter([router.query.unit as string])
-      }
-    }
-  }, [router.isReady, router.query])
-
   return (
     <ContentLayout>
       {({ Header, Body }) => (
@@ -127,22 +97,7 @@ export default function Users({ users, assets, units, companies }: ServerSideRet
           >
             <div className="p-3 w-full md:w-auto flex flex-col gap-2 justify-center bg-[#00000060] backdrop-blur rounded-lg border-white border-solid border-2">
               <span className="text-base md:text-lg font-semibold text-white">Filter by company/unit/asset:</span>
-              <Select
-                dropdownRender={() => null as any}
-                dropdownStyle={{ display: 'none' }}
-                mode="multiple"
-                onClick={((e) => {
-                  e.preventDefault();
-                  WaitForOptionSelect().then((result) => setSearchFilter(Object.values(result).flat()));
-                })}
-                placeholder="No filter"
-                tagRender={(props) => tagRender({ ...props, onClose: ((option) => RemoveOption(option).then((result) => setSearchFilter(Object.values(result).flat()))) })}
-                value={searchFilter.map((value) => ({ value }))}
-                options={[...companies, ...units, ...assets].map(({ name }) => ({
-                  label: name,
-                  value: name
-                }))}
-              />
+              {SearchComponent}
             </div>
           </Header>
           <Body>
@@ -169,8 +124,13 @@ export default function Users({ users, assets, units, companies }: ServerSideRet
                             <div onClick={() => HandleCopy(company.name, 'Company')} className="hover:text-black cursor-pointer">
                               <span className="text-black">Company: </span>{company.name}
                             </div>
-                            <div onClick={() => HandleCopy(unit.name, 'Unit')} className="hover:text-black cursor-pointer">
-                              <span className="text-black">Unit: </span>{unit.name}
+                            <div className="flex gap-2">
+                              <span className="hover:text-black cursor-pointer" onClick={() => HandleCopy(unit.name, 'Unit')}>
+                                <span className="text-black">Unit: </span>{unit.name}
+                              </span>
+                              <Link href={`/units?units=${unit.name}`}>
+                                <FiExternalLink />
+                              </Link>
                             </div>
                             <div onClick={() => HandleCopy(email, 'Email')} className="hover:text-black cursor-pointer">
                               <span className="text-black">Email: </span>{email}

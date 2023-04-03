@@ -26,19 +26,19 @@ const NavigationMap: NavigationPage[] = [ //? In the future this could be an API
   {
     title: 'Units',
     description: 'List all units.',
-    href: '/assets',
+    href: '/units',
     src: '/industry.png'
   },
   {
     title: 'Companies',
     description: 'List all companies.',
-    href: '/assets',
+    href: '/companies',
     src: '/companies.png'
   },
   {
-    title: 'Service orders',
-    description: 'List all service orders.', //TODO, isso aqui vai ser um calendario?
-    href: '/assets',
+    title: 'Work orders',
+    description: 'List all work orders.',
+    href: '/workorders',
     src: '/orders.png'
   },
 ]

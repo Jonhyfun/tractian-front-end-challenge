@@ -3,6 +3,8 @@ import { ContentLayout } from "@/components/ContentLayout";
 import { HandleCopy } from "@/utils/assets/interaction";
 import { Avatar } from "antd";
 import { GetServerSideProps } from "next";
+import Link from "next/link";
+import { FiExternalLink } from "react-icons/fi";
 
 import { RxAvatar } from 'react-icons/rx'
 
@@ -28,19 +30,23 @@ export const getServerSideProps: GetServerSideProps<ServerSideReturn> = async (c
   }
 }
 
-const Item = ({ label, content }: { label: string, content: string }) => (
+const Item = ({ label, content }: { label: string, content: string | JSX.Element }) => (
   <div className="flex flex-col gap-2 border-2 border-white border-solid p-3">
     <span className="font-semibold">{label}:</span>
-    <span className="hover:text-slate-400 cursor-pointer" onClick={() => HandleCopy(content, label)}>{content}</span>
+    {typeof content === 'string' ? (
+      <span className="hover:text-slate-400 cursor-pointer" onClick={() => HandleCopy(content, label)}>{content}</span>
+    ) : (
+      content
+    )}
   </div>
 )
 
 export default function UserPage({ user }: ServerSideReturn) {
   return (
-    <ContentLayout title="User" description="Click any info to copy it to the clipboard." previousPage>
+    <ContentLayout>
       {({ Header, Body }) => (
         <>
-          <Header />
+          <Header title="User" description="Click any info to copy it to the clipboard." previousPage />
           <Body className="p-3">
             <div className="flex gap-6 w-full h-full bg-[#00000060] backdrop-blur rounded-lg border-white border-solid border-2 p-3">
               <div className="flex flex-col self-start items-center border-white border-solid border-2">
@@ -51,7 +57,16 @@ export default function UserPage({ user }: ServerSideReturn) {
                 <Item label="Id" content={user.id.toString()} />
                 <Item label="Email" content={user.email} />
                 <Item label="Company" content={user.company.name} />
-                <Item label="Unit" content={user.unit.name} />
+                <Item label="Unit" content={(
+                  <div className="flex gap-2">
+                    <span className="hover:text-slate-400 cursor-pointer" onClick={() => HandleCopy(user.unit.name, 'Unit')}>
+                      {user.unit.name}
+                    </span>
+                    <Link href={`/units?units=${user.unit.name}`}>
+                      <FiExternalLink />
+                    </Link>
+                  </div>
+                )} />
               </div>
             </div>
           </Body>

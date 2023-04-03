@@ -4,8 +4,7 @@ import { useFilterModal } from "@/hooks/optionsModal";
 import { Button, Divider, List } from "antd";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
-
-import { useMemo } from 'react'
+import { useMemo } from "react";
 
 type ServerSideReturn = {
   units: Unit[]
@@ -23,7 +22,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideReturn> = async (c
   }
 }
 
-export default function Units({ units, companies }: ServerSideReturn) {
+export default function Companies({ companies, units }: ServerSideReturn) {
   const { ModalComponent, SearchComponent, selectedOptions, setSelectedOptions, WaitForOptionSelect, RemoveOption, Confirm, CloseModal } = useFilterModal({
     options: {
       companies: companies.map(({ name }) => name),
@@ -38,13 +37,13 @@ export default function Units({ units, companies }: ServerSideReturn) {
     }
   });
 
-  const filteredUnits = useMemo(() => (
+  const filteredCompanies = useMemo(() => (
     Object.values(selectedOptions).flat().length === 0 ? (
-      units
+      companies
     ) : (
-      units.filter(({ name, companyId }) => (
-        selectedOptions.companies.includes(companies.find(({ id }) => id === companyId)!.name)
-        || selectedOptions.units.includes(name)
+      companies.filter(({ name }) => (
+        selectedOptions.companies.includes(name)
+        || units.some(({ name }) => selectedOptions.units.includes(name))
       ))
     )
   ), [companies, selectedOptions, units])
@@ -54,7 +53,7 @@ export default function Units({ units, companies }: ServerSideReturn) {
       {({ Header, Body }) => (
         <>
           {ModalComponent}
-          <Header title="Units" previousPage>
+          <Header title="Companies" previousPage>
             <div className="p-3 flex flex-col gap-2 justify-center bg-[#00000060] backdrop-blur rounded-lg border-white border-solid border-2">
               <span className="text-base md:text-lg font-semibold text-white">Filter by assets/users:</span>
               {SearchComponent}
@@ -64,24 +63,24 @@ export default function Units({ units, companies }: ServerSideReturn) {
             <div className="p-3 bg-[#00000060] backdrop-blur rounded-lg border-white border-solid border-2">
               <List
                 itemLayout="horizontal"
-                dataSource={filteredUnits.map((unitProps) => ({ ...unitProps, company: companies.find(({ id }) => id === unitProps.companyId)! }))}
+                dataSource={filteredCompanies}
                 renderItem={(item) => (
                   <List.Item>
                     <List.Item.Meta
-                      title={<span className="text-white text-xl">{item.name} ({item.company.name})</span>}
+                      title={<span className="text-white text-xl">{item.name}</span>}
                       description={(
                         <div className="flex flex-col gap-4">
                           <Divider style={{ borderBottom: '1px solid white', marginTop: '2px', marginBottom: '2px' }} />
                           <div className="flex gap-2 items-center">
-                            <Link href={`/workorders?units=${item.name}`}>
+                            <Link href={`/workorders?companies=${item.name}`}>
                               <Button>Work Orders</Button>
                             </Link>
                             <Divider style={{ borderLeft: '1px solid white' }} type="vertical" />
-                            <Link href={`/assets?units=${item.name}`}>
+                            <Link href={`/assets?companies=${item.name}`}>
                               <Button>Assets</Button>
                             </Link>
                             <Divider style={{ borderLeft: '1px solid white' }} type="vertical" />
-                            <Link href={`/users?units=${item.name}`}>
+                            <Link href={`/users?companies=${item.name}`}>
                               <Button>Users</Button>
                             </Link>
                           </div>

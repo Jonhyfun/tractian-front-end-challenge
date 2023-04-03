@@ -10,6 +10,7 @@ type BodyType = ChildRenderFunction<{ className?: string }>;
 
 interface IContentLayout {
   children: (props: { Header: HeaderType, Body: BodyType }) => ReactElement
+  maxWidth?: string
 }
 
 const Header: HeaderType = ({ children, ...headerProps }) => {
@@ -31,15 +32,15 @@ const Body: BodyType = ({ children, className }) => {
   )
 }
 
-export function ContentLayout({ children }: IContentLayout) {
+export function ContentLayout({ children, maxWidth = '46.875rem' }: IContentLayout) {
 
   const LayoutFunction = useCallback(({ children }: PropsWithChildren) => {
     return (
-      <div className="flex h-[inherit] self-stretch flex-col gap-2 lg:-mt-4 max-w-[46.875rem] w-full">
+      <div style={{ maxWidth }} className="flex h-[inherit] self-stretch flex-col gap-2 lg:-mt-4 w-full">
         {children}
       </div>
     )
-  }, [])
+  }, [maxWidth])
 
   return LayoutFunction({ children: children({ Header, Body }) })
 }

@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next"
-import { useState, useEffect, useRef } from "react"
-import { Asset, GetAssets, GetUsers, User } from "@/api/fakeapi"
+import { useState, useEffect, useMemo } from "react"
+import { Asset, GetAssets, GetUnit, GetUnits, GetUsers, Unit, User } from "@/api/fakeapi"
 import { SortByHealth } from "@/utils/assets/sorting"
 import { AssetStatusMap, getHealthColor } from "@/utils/assets/display"
 
@@ -11,60 +11,86 @@ import Meta from "antd/lib/card/Meta"
 import Search from "antd/lib/input/Search"
 import { BsFillBarChartFill } from "react-icons/bs"
 import { Grid } from "@/components/Grid"
-import { Card } from "antd"
+import { Button, Card } from "antd"
 import { ContentLayout } from "@/components/ContentLayout"
+import { useOptionsModal } from "@/hooks/optionsModal"
 
 type ServerSideReturn = {
   assets: Asset[]
   users: User[]
+  units: Unit[]
 }
 
 export const getServerSideProps: GetServerSideProps<ServerSideReturn> = async (context) => {
-  const [assets, users] = await Promise.all([GetAssets(), GetUsers()]);
+  const [assets, users, units] = await Promise.all([GetAssets(), GetUsers(), GetUnits()]);
 
   return {
     props: {
       assets,
-      users
+      users,
+      units
     }
   }
 }
 
-export default function Assets({ assets: allAssets, users }: ServerSideReturn) {
-  const [searchFilter, setSearchFilter] = useState<string>('');
-  const [assets, setAssets] = useState(allAssets);
+export default function Assets({ assets, users, units }: ServerSideReturn) {
 
-  useEffect(() => {
-    if (searchFilter != '') {
-      setAssets(allAssets.filter(({ name, model }) => name.toUpperCase().includes(searchFilter.toUpperCase()) || model.toUpperCase().includes(searchFilter.toUpperCase())))
+  const { ModalComponent, SearchComponent, selectedOptions, setSelectedOptions, WaitForOptionSelect, RemoveOption, Confirm, CloseModal } = useOptionsModal({
+    options: {
+      assets: assets.map(({ name }) => name),
+      users: users.map(({ name }) => name),
+      units: units.map(({ name }) => name),
+    },
+    optionLabels: [
+      'Assets',
+      'Assigned Users',
+      'Units'
+    ],
+    modalProps: {
+      footer: [
+        <Button key="back" onClick={() => CloseModal()}>Cancel</Button>,
+        <Button key="filter" onClick={() => Confirm()} type="primary">Filter</Button>,
+      ]
     }
-    else {
-      setAssets(allAssets);
-    }
-  }, [allAssets, searchFilter])
+  });
+
+  const searchFilter = useMemo(() => Object.values(selectedOptions).flat(), [selectedOptions])
+
+  const filteredAssets = useMemo(() => (
+    searchFilter.length === 0 ? (
+      assets
+    ) : (
+      assets.filter(({ assignedUserIds, unitId, name }) => (
+        assignedUserIds.some((assignedId) => selectedOptions.users.includes(users.find(({ id }) => id === assignedId)!.name)
+          || selectedOptions.units.includes(units.find(({ id }) => id === unitId)!.name)
+          || selectedOptions.assets.includes(name)
+        ))
+      )
+    )
+  ), [assets, units, users, searchFilter.length, selectedOptions])
 
   return (
     <ContentLayout>
       {({ Header, Body }) => (
         <>
+          {ModalComponent}
           <Header title="Assets" description="Click any asset to see more info." previousPage>
             <Link href="/assets/chart" className="md:flex-shrink-0 flex-1 lg:flex-none p-3 h-[inherit] flex items-center justify-center flex-col gap-2 bg-[#00000060] backdrop-blur rounded-lg border-white border-solid border-2">
               <BsFillBarChartFill className='w-5 h-5 md:w-7 md:h-7' />
               <span className='text-lg md:text-2xl text-center'>Chart Mode</span>
             </Link>
             <div className="p-3 flex flex-col gap-2 justify-center bg-[#00000060] backdrop-blur rounded-lg border-white border-solid border-2">
-              <span className="text-base md:text-lg font-semibold text-white">Search Asset:</span>
-              <Search placeholder="Motor X" onChange={({ target: { value } }) => setSearchFilter(value)} allowClear />
+              <span className="text-base md:text-lg font-semibold text-white">Filter by assets/users:</span>
+              {SearchComponent}
             </div>
           </Header>
           <Body>
-            {assets.length > 0 ? (
+            {filteredAssets.length > 0 ? (
               <Grid className="p-3 ">
                 <>
-                  {SortByHealth(assets).map(({ image, name, id, status, healthscore, assignedUserIds }) => (
-                    <Link key={id} className="place-self-center contents" href="/assets">
+                  {SortByHealth(filteredAssets).map(({ image, name, id, status, healthscore, assignedUserIds, unitId }) => (
+                    <>
                       <Card
-                        hoverable
                         bodyStyle={{ padding: 0 }}
                         className={`hover:bg-slate-200 overflow-hidden justify-self-center w-full md:max-w-[14rem]`}
                         cover={<Image priority width={250} height={224} className="object-cover" alt={name} src={image} />}
@@ -77,6 +103,9 @@ export default function Assets({ assets: allAssets, users }: ServerSideReturn) {
                             <div>
                               <span className="text-black">Health: </span><span style={{ color: getHealthColor(healthscore) }}>{healthscore}%</span>
                             </div>
+                            <div>
+                              <span className="text-black">Unit: </span><span>{units.find(({ id }) => id === unitId)!.name}</span>
+                            </div>
                             <div className="flex flex-col gap-1">
                               <span className="text-black">Assigned Users: </span>
                               {assignedUserIds.map((userId, index) => (
@@ -88,7 +117,7 @@ export default function Assets({ assets: allAssets, users }: ServerSideReturn) {
                           </div>
                         )} />
                       </Card>
-                    </Link>
+                    </>
                   ))}
                 </>
               </Grid>
