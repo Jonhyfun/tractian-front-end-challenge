@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next"
-import { useState, useMemo, useCallback } from "react"
-import { Asset, GetAssets, GetUnits, GetUsers, Unit, User } from "@/api/fakeapi"
+import { useState, useMemo, useCallback, useEffect } from "react"
+import { Asset, Company, GetAssets, GetCompanies, GetUnits, GetUsers, Unit, User } from "@/api/fakeapi"
 import { SortByHealth } from "@/utils/assets/sorting"
 import { AssetStatusMap, getHealthColor } from "@/utils/assets/display"
 
@@ -17,20 +17,23 @@ import { useFilterModal } from "@/hooks/filterModal"
 import { FaInfo, FaPlus } from "react-icons/fa"
 import { EditableLabel } from "@/components/EditableLabel"
 import { useTaskModal } from "@/hooks/taskModal"
+import { useRouter } from "next/router"
 
 type ServerSideReturn = {
   assets: Asset[]
   users: User[]
+  companies: Company[]
   units: Unit[]
 }
 
 export const getServerSideProps: GetServerSideProps<ServerSideReturn> = async (context) => {
-  const [assets, users, units] = await Promise.all([GetAssets(), GetUsers(), GetUnits()]);
+  const [assets, users, companies, units] = await Promise.all([GetAssets(), GetUsers(), GetCompanies(), GetUnits()]);
 
   return {
     props: {
       assets,
       users,
+      companies,
       units
     }
   }
@@ -167,9 +170,11 @@ function AssetGrid({ assets, units, users, WaitForConfirmation }: { assets: Asse
   )
 }
 
-export default function Assets({ assets, users, units }: ServerSideReturn) {
+export default function Assets({ assets, users, companies, units }: ServerSideReturn) {
 
   const { ModalComponent: TaskModal, WaitForConfirmation } = useTaskModal({ users });
+
+  const router = useRouter();
 
   const { ModalComponent, SearchComponent, selectedOptions, setSelectedOptions, WaitForOptionSelect, RemoveOption, Confirm, CloseModal } = useFilterModal({
     options: {
@@ -204,6 +209,20 @@ export default function Assets({ assets, users, units }: ServerSideReturn) {
       )
     )
   ), [assets, units, users, searchFilter.length, selectedOptions])
+
+
+  useEffect(() => {
+    if (router.isReady) {
+      if (router.query.companies) {
+        setSelectedOptions((current) => (
+          {
+            ...current,
+            units: units.filter(({ companyId }) => companies.find(({ name }) => name === router.query.companies as string)!.id == companyId).map(({ name }) => name)
+          }
+        ))
+      }
+    }
+  }, [companies, router.isReady, router.query.companies, setSelectedOptions, units])
 
   return (
     <ContentLayout>
