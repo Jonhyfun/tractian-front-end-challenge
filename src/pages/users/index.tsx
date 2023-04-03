@@ -14,7 +14,7 @@ import { getHealthColor } from "@/utils/assets/display";
 
 import { FiExternalLink } from 'react-icons/fi'
 import { HandleCopy } from "@/utils/assets/interaction";
-import { useFilterModal } from "@/hooks/optionsModal";
+import { useFilterModal } from "@/hooks/filterModal";
 
 import { useRouter } from "next/router";
 

@@ -9,7 +9,7 @@ import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 import { GrFormClose } from 'react-icons/gr'
 import { useRouter } from "next/router";
 
-type OptionsModalProps = {
+type FilterModalProps = {
   modalProps?: ModalProps
   options: {
     [key in string]: string[]
@@ -37,7 +37,7 @@ const tagRender = (props: Omit<CustomTagProps, 'onClose'> & { onClose: (label: s
   );
 };
 
-export function useFilterModal({ options, optionLabels, modalProps }: OptionsModalProps) {
+export function useFilterModal({ options, optionLabels, modalProps }: FilterModalProps) {
   const [res, setResolve] = useState<(result: any) => {}>();
 
   const router = useRouter();
@@ -58,7 +58,7 @@ export function useFilterModal({ options, optionLabels, modalProps }: OptionsMod
     }))
   }, [])
 
-  const RemoveOption: (option: string) => Promise<OptionsModalProps['options']> = useCallback((option: string) => {
+  const RemoveOption: (option: string) => Promise<FilterModalProps['options']> = useCallback((option: string) => {
     return new Promise((res) => {
       setSelectedOptions((current) => {
         let accumulator = {} as any;
@@ -82,7 +82,7 @@ export function useFilterModal({ options, optionLabels, modalProps }: OptionsMod
     setResolve(null as any)
   }, [defaultOptions, res])
 
-  const WaitForOptionSelect: () => Promise<OptionsModalProps['options']> = useCallback(() => {
+  const WaitForOptionSelect: () => Promise<FilterModalProps['options']> = useCallback(() => {
     return new Promise((res) => {
       setResolve(() => res);
     })
@@ -121,7 +121,7 @@ export function useFilterModal({ options, optionLabels, modalProps }: OptionsMod
           </div>
           <div className="flex flex-col gap-2">
             {options[selectedOptionTab].map((option, index) => (
-              <Checkbox checked={selectedOptions[selectedOptionTab]?.includes(option)} onClick={() => ToggleOption(selectedOptionTab, option)} className="ml-3" key={`option-${index}`}>
+              <Checkbox checked={selectedOptions[selectedOptionTab]?.includes(option)} onClick={() => ToggleOption(selectedOptionTab, option)} className="ml-3" key={`option-${index}-${option}`}>
                 {option}
               </Checkbox>
             ))}

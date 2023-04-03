@@ -1,6 +1,6 @@
 import { Company, GetCompanies, GetUnits, Unit } from "@/api/fakeapi";
 import { ContentLayout } from "@/components/ContentLayout";
-import { useFilterModal } from "@/hooks/optionsModal";
+import { useFilterModal } from "@/hooks/filterModal";
 import { Button, Divider, List } from "antd";
 import { GetServerSideProps } from "next";
 import Link from "next/link";

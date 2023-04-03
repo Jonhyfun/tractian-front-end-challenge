@@ -13,7 +13,7 @@ import { BsFillBarChartFill } from "react-icons/bs"
 import { Grid } from "@/components/Grid"
 import { Button, Card } from "antd"
 import { ContentLayout } from "@/components/ContentLayout"
-import { useOptionsModal } from "@/hooks/optionsModal"
+import { useFilterModal } from "@/hooks/filterModal"
 
 type ServerSideReturn = {
   assets: Asset[]
@@ -35,7 +35,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideReturn> = async (c
 
 export default function Assets({ assets, users, units }: ServerSideReturn) {
 
-  const { ModalComponent, SearchComponent, selectedOptions, setSelectedOptions, WaitForOptionSelect, RemoveOption, Confirm, CloseModal } = useOptionsModal({
+  const { ModalComponent, SearchComponent, selectedOptions, setSelectedOptions, WaitForOptionSelect, RemoveOption, Confirm, CloseModal } = useFilterModal({
     options: {
       assets: assets.map(({ name }) => name),
       users: users.map(({ name }) => name),
