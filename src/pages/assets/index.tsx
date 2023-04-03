@@ -80,7 +80,7 @@ export default function Assets({ assets: allAssets, users }: ServerSideReturn) {
                             <div className="flex flex-col gap-1">
                               <span className="text-black">Assigned Users: </span>
                               {assignedUserIds.map((userId, index) => (
-                                <Link onClick={(e) => e.stopPropagation()} target="_blank" href={`/users/${userId}`} className="contents" key={`${userId}-${index}`}>
+                                <Link onClick={(e) => e.stopPropagation()} href={`/users/${userId}`} className="contents" key={`${userId}-${index}`}>
                                   {users.find(({ id }) => id == userId)?.name + (index === assignedUserIds.length - 1 ? '' : ', ')}
                                 </Link>
                               ))}

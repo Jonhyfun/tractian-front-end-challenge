@@ -1,15 +1,15 @@
-import { Asset, GetAssets } from "@/api/fakeapi"
+import { Asset, GetAsset, GetAssets } from "@/api/fakeapi"
 import { GetServerSideProps } from "next"
 
 type ServerSideReturn = {
-  assets: Asset[]
+  asset: Asset
 }
 
 export const getServerSideProps: GetServerSideProps<ServerSideReturn> = async ({ res, query }) => {
-  let assets: Asset[] = [];
+  let asset: Asset = {} as any;
 
   try {
-    assets = await GetAssets(query.id as string);
+    asset = await GetAsset(query.id as string);
   }
   catch {
     res.writeHead(301, { Location: '/' });
@@ -18,12 +18,12 @@ export const getServerSideProps: GetServerSideProps<ServerSideReturn> = async ({
 
   return {
     props: {
-      assets,
+      asset,
     }
   }
 }
 
-export default function Assets({ assets }: ServerSideReturn) {
+export default function Assets({ asset }: ServerSideReturn) {
   return (
     <>
     </>

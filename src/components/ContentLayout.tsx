@@ -2,10 +2,10 @@ import { PropsWithChildren, ReactElement, useCallback, useMemo } from "react"
 import { GridHeader } from "./Grid"
 import { GridTitle } from "./Grid/GridHeader"
 
-type ChildRenderFunction = ({ children }: PropsWithChildren) => JSX.Element;
+type ChildRenderFunction<T = unknown> = (props: PropsWithChildren & T) => JSX.Element;
 
 interface IContentLayout extends GridTitle {
-  children: (props: { Header: ChildRenderFunction, Body: ChildRenderFunction }) => ReactElement
+  children: (props: { Header: ChildRenderFunction, Body: ChildRenderFunction<{ className?: string }> }) => ReactElement
 }
 
 export function ContentLayout({ children, ...headerProps }: IContentLayout) {
@@ -18,15 +18,15 @@ export function ContentLayout({ children, ...headerProps }: IContentLayout) {
     </div>
   ), [headerProps])
 
-  const Body = useCallback(({ children }: PropsWithChildren) => (
-    <div className="h-full">
+  const Body = useCallback(({ children, className }: PropsWithChildren<{ className?: string }>) => (
+    <div className={`h-full ${className}`}>
       {children}
     </div>
   ), [])
 
   const LayoutFunction = useCallback(({ children }: PropsWithChildren) => {
     return (
-      <div className="flex h-[inherit] self-stretch flex-col gap-2 lg:-mt-4 max-w-[750px] w-full">
+      <div className="flex h-[inherit] self-stretch flex-col gap-2 lg:-mt-4 max-w-[46.875rem] w-full">
         {children}
       </div>
     )

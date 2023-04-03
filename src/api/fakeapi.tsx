@@ -37,6 +37,7 @@ export type Asset = DBObject & {
 }
 
 export const GetAssets = () => defaultGet<Asset[]>('/assets')
+export const GetAsset = (assetId: string) => defaultGet<Asset>(`/assets/${assetId}`)
 
 export type User = DBObject & {
   companyId: number,
@@ -44,14 +45,36 @@ export type User = DBObject & {
   email: string,
 }
 
+export type UserWithReferences = User & {
+  unit: Unit
+  company: Company
+  assets: Asset[]
+}
+
 export const GetUsers = () => defaultGet<User[]>('/users');
+export const GetUser = (userId: string) => defaultGet<User>(`/users/${userId}`);
 
 export type Unit = DBObject & {
   companyId: number,
 }
 
 export const GetUnits = () => defaultGet<Unit[]>('/units');
+export const GetUnit = (unitId: number) => defaultGet<Unit>(`/units/${unitId}`);
 
 export type Company = DBObject
 
 export const GetCompanies = () => defaultGet<Company[]>('/companies')
+export const GetCompany = (companyId: number) => defaultGet<Company>(`/companies/${companyId}`)
+
+export type WorkOrder = {
+  assetId: number,
+  assignedUserIds: number[],
+  checklist: { completed: boolean, task: string }[],
+  description: string,
+  id: number,
+  priority: string,
+  status: string,
+  title: string
+}
+
+export const GetWorkOrders = () => defaultGet<WorkOrder[]>('workorders');
