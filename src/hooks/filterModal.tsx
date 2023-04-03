@@ -93,7 +93,6 @@ export function useFilterModal({ options, optionLabels, modalProps }: FilterModa
     if (router.isReady) {
       const optionKeys = Object.keys(options)
       Object.keys(router.query).forEach((queryKey) => {
-        console.log(queryKey, optionKeys)
         if (optionKeys.includes(queryKey)) {
           setSelectedOptions((current) => ({
             ...current,
@@ -128,7 +127,6 @@ export function useFilterModal({ options, optionLabels, modalProps }: FilterModa
           </div>
         </div>
       </Modal>
-
     </>
   ), [Confirm, res, modalProps, selectedOptionTab, optionLabels, options, selectedOptions, ToggleOption])
 

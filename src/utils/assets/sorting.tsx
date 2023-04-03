@@ -19,17 +19,21 @@ export function SortByHealth(assets: Asset[]): Asset[] {
 }
 
 export function AssetsOrganizer(assets: Asset[]) {
-  console.log({ assets })
+  const result = {
+    dates: [] as string[],
+    assetNames: [] as string[],
+    healthSeries: [] as Highcharts.SeriesOptionsType[],
+    totalUptimeSeries: [] as Highcharts.SeriesOptionsType[],
+    totalHealthPercents: [] as Highcharts.SeriesOptionsType[],
+  }
 
-  let dates: string[] = [];
-  let series: Highcharts.SeriesOptionsType[] = [];
-  let assetsNames: string[] = [];
+  const { assetNames, dates, healthSeries, totalUptimeSeries, totalHealthPercents } = result;
 
-  assets.forEach(({ healthHistory, name }) => {
+  assets.forEach(({ healthHistory, name, healthscore, metrics }) => {
     let data: { y: number }[] = [];
 
-    if (!assetsNames.includes(name)) {
-      assetsNames.push(name);
+    if (!assetNames.includes(name)) {
+      assetNames.push(name);
     }
 
     healthHistory.forEach(({ timestamp, status }) => {
@@ -40,20 +44,33 @@ export function AssetsOrganizer(assets: Asset[]) {
       }
     })
 
-    series.push({
+    healthSeries.push({
       type: 'line',
       name,
       data,
     })
+
+    totalUptimeSeries.push({
+      type: 'column',
+      name,
+      data: [
+        [name, (Number(metrics.totalUptime.toFixed(2)))]
+      ],
+    })
+
+    totalHealthPercents.push({
+      type: 'column',
+      name,
+      data: [
+        [name, healthscore]
+      ],
+    })
   })
 
-  console.log({ dates })
-
   return {
+    ...result,
     dates: dates.sort((a, b) => {
       return new Date(a).getTime() - new Date(b).getTime();
     }),
-    series,
-    assetsNames
   }
 }

@@ -27,48 +27,104 @@ export const getServerSideProps: GetServerSideProps<ServerSideReturn> = async (c
 }
 
 export default function ChartView({ assets }: ServerSideReturn) {
-  const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
+  const assetChartComponentRef = useRef<HighchartsReact.RefObject>(null);
 
-  const { dates, series, assetsNames } = useMemo(() => AssetsOrganizer(assets), [assets]);
+  const { dates, healthSeries, totalUptimeSeries, totalHealthPercents } = useMemo(() => AssetsOrganizer(assets), [assets]);
 
-  const options = useMemo(() => {
-    const _options: Highcharts.Options = {
-      chart: {
-        type: 'spline'
-      },
-      title: {
-        text: 'Assets Uptime Chart'
-      },
-      xAxis: {
-        categories: dates,
-        labels: {
-          formatter: function () {
-            return new Date(this.value).toLocaleString(); // Formats the label to 2 decimal places
-          },
-        }
-      },
-      yAxis: {
-        categories: Object.values(AssetNameToLabel)
-      },
-      plotOptions: {
-        spline: {
-          marker: {
-            radius: 4,
-            lineColor: '#666666',
-            lineWidth: 1
-          }
-        }
-      },
-      series,
-      tooltip: {
+  const assetOptions: Highcharts.Options = useMemo(() => ({
+    chart: {
+      type: 'spline'
+    },
+    title: {
+      text: 'Uptime Chart'
+    },
+    xAxis: {
+      categories: dates,
+      labels: {
         formatter: function () {
-          return AssetNameToLabel[getKeyByValue(AssetGraphMap, this.y) as keyof typeof AssetNameToLabel]
+          return new Date(this.value).toLocaleString(); // Formats the label to 2 decimal places
+        },
+      }
+    },
+    yAxis: {
+      categories: Object.values(AssetNameToLabel)
+    },
+    plotOptions: {
+      spline: {
+        marker: {
+          radius: 4,
+          lineColor: '#666666',
+          lineWidth: 1
         }
       }
-    };
+    },
+    series: healthSeries,
+    tooltip: {
+      formatter: function () {
+        return AssetNameToLabel[getKeyByValue(AssetGraphMap, this.y) as keyof typeof AssetNameToLabel]
+      }
+    }
+  }), [dates, healthSeries])
 
-    return _options;
-  }, [dates, series])
+  const totalUptimeOptions: Highcharts.Options = useMemo(() => ({
+    chart: {
+      type: 'collumn'
+    },
+    title: {
+      text: 'Total Hours Chart'
+    },
+    xAxis: {
+      type: 'category',
+    },
+    yAxis: {
+      min: 0
+    },
+    plotOptions: {
+      spline: {
+        marker: {
+          radius: 4,
+          lineColor: '#666666',
+          lineWidth: 1
+        }
+      }
+    },
+    series: totalUptimeSeries,
+  }), [totalUptimeSeries])
+
+  const currentHealthOptions: Highcharts.Options = useMemo(() => ({
+    chart: {
+      type: 'collumn'
+    },
+    title: {
+      text: 'Health Levels % Chart'
+    },
+    xAxis: {
+      type: 'category',
+    },
+    yAxis: {
+      min: 0,
+      labels: {
+        formatter: function () {
+          return this.value + "%"
+        }
+      }
+    },
+    plotOptions: {
+      spline: {
+        marker: {
+          radius: 4,
+          lineColor: '#666666',
+          lineWidth: 1
+        }
+      }
+    },
+    series: totalHealthPercents,
+    tooltip: {
+      formatter: function () {
+        return this.y + "%"
+      }
+    }
+  }), [totalHealthPercents])
 
   return (
     <ContentLayout>
@@ -81,11 +137,19 @@ export default function ChartView({ assets }: ServerSideReturn) {
             </Link>
           </Header>
           <Body>
-            <div className='p-3'>
+            <div className="p-3 flex flex-col gap-3">
               <HighchartsReact
                 highcharts={Highcharts}
-                options={options}
-                ref={chartComponentRef}
+                options={assetOptions}
+                ref={assetChartComponentRef}
+              />
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={totalUptimeOptions}
+              />
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={currentHealthOptions}
               />
             </div>
           </Body>

@@ -49,6 +49,7 @@ export type UserWithReferences = User & {
   unit: Unit
   company: Company
   assets: Asset[]
+  workorders: WorkOrder[]
 }
 
 export const GetUsers = () => defaultGet<User[]>('/users');
@@ -72,8 +73,8 @@ export type WorkOrder = {
   checklist: { completed: boolean, task: string }[],
   description: string,
   id: number,
-  priority: string,
-  status: string,
+  priority: "high" | 'medium',
+  status: "completed" | "in progress",
   title: string
 }
 

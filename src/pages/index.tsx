@@ -37,7 +37,7 @@ const NavigationMap: NavigationPage[] = [ //? In the future this could be an API
   },
   {
     title: 'Work orders',
-    description: 'List all work orders.',
+    description: <span className='line-clamp-1'>List all work orders.</span> as any,
     href: '/workorders',
     src: '/orders.png'
   },

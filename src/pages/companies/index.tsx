@@ -1,5 +1,6 @@
 import { Company, GetCompanies, GetUnits, Unit } from "@/api/fakeapi";
 import { ContentLayout } from "@/components/ContentLayout";
+import { EditableLabel } from "@/components/EditableLabel";
 import { useFilterModal } from "@/hooks/filterModal";
 import { Button, Divider, List } from "antd";
 import { GetServerSideProps } from "next";
@@ -67,13 +68,19 @@ export default function Companies({ companies, units }: ServerSideReturn) {
                 renderItem={(item) => (
                   <List.Item>
                     <List.Item.Meta
-                      title={<span className="text-white text-xl">{item.name}</span>}
+                      title={(
+                        <EditableLabel className="items-center text-white text-xl" initialText={item.name}>
+                          {({ content }) => (
+                            <span>{content}</span>
+                          )}
+                        </EditableLabel>
+                      )}
                       description={(
                         <div className="flex flex-col gap-4">
                           <Divider style={{ borderBottom: '1px solid white', marginTop: '2px', marginBottom: '2px' }} />
                           <div className="flex gap-2 items-center">
-                            <Link href={`/workorders?companies=${item.name}`}>
-                              <Button>Work Orders</Button>
+                            <Link href={`/units?companies=${item.name}`}>
+                              <Button>Units</Button>
                             </Link>
                             <Divider style={{ borderLeft: '1px solid white' }} type="vertical" />
                             <Link href={`/assets?companies=${item.name}`}>
