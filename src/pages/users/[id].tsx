@@ -60,8 +60,8 @@ export default function UserPage({ user, users }: ServerSideReturn) {
           <Header title="User" description="Click any info to copy it to the clipboard." previousPage />
           <Body className="p-3">
             <div className="flex flex-col gap-8 w-full h-full bg-[#00000060] backdrop-blur rounded-lg border-white border-solid border-2 p-3">
-              <div className="flex gap-6 w-full">
-                <div className="flex flex-col self-start items-center border-white border-solid border-2">
+              <div className="flex flex-col md:flex-row gap-6 w-full">
+                <div className="flex flex-col self-center md:self-start items-center border-white border-solid border-2">
                   <Avatar className="bg-slate-600 rounded-none border-white border-solid border-0 border-b-2" shape="square" size={192} icon={<RxAvatar />} />
                   <EditableLabel parentClassName="bg-[#00000060] max-w-[196px] p-3 w-full" className="w-full text-center text-lg justify-center items-center" initialText={user.name}>
                     {({ content }) => (
@@ -69,7 +69,7 @@ export default function UserPage({ user, users }: ServerSideReturn) {
                     )}
                   </EditableLabel>
                 </div>
-                <div className="grid grid-cols-3 self-start gap-2 p-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 self-center md:self-start gap-2 p-3">
                   <Item label="Id" content={user.id.toString()} />
                   <Item label="Email" content={user.email} />
                   <Item label="Company" content={user.company.name} />
