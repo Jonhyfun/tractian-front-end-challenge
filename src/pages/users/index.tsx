@@ -138,7 +138,7 @@ export default function Users({ users, assets, units, companies }: ServerSideRet
                             <div className="flex flex-col gap-2">
                               <span className="text-black">Assigned Assets: </span>
                               {userAssets.map(({ name: assetName, id, image, healthscore }) => (
-                                <Link key={`${id}-${email}`} className="flex gap-1 items-center text-sm" href={`/assets/${id}`}>
+                                <Link key={`${id}-${email}`} className="flex gap-1 items-center text-sm" href={`/assets/?assets=${assetName}`}>
                                   <Image alt={assetName} priority width={24} height={24} className="object-cover rounded-full" src={image} />
                                   <span className="whitespace-break-spaces">
                                     {assetName}{' '}
