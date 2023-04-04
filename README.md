@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-   [<b>Tractian</b> Front End Software Engineer Challenge.](https://tractian.notion.site/Front-End-Software-Engineer-cf7f9a91d97647abaf99b2565f8ae8fa)
+   [Tractian Front End Software Engineer Challenge.](https://tractian.notion.site/Front-End-Software-Engineer-cf7f9a91d97647abaf99b2565f8ae8fa)
 </p>
 <hr />
 
