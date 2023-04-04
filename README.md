@@ -20,6 +20,13 @@ Any information can be edited, but those changes do not persist because there ar
 
 Any question about any feature, component or why something was made the way it is, please dont hesitate to contact me.
 
+# Technologies used
+- [Typescript](https://www.typescriptlang.org/)
+- [NextJS](https://nextjs.org/)
+- [Highcharts](https://www.highcharts.com/)
+- [Ant Design](https://ant.design/)
+- [Tailwind](https://tailwindcss.com/)
+
 # Reaching out to me
 You can contact me via my [Email](mailto:jp.grimaldi@hotmail.com) or through my [Linkedin](https://www.linkedin.com/in/jpgrima)
 
