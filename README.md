@@ -1,38 +1,37 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Tractian Front End Software Engineer Challenge
 
-## Getting Started
 
-First, run the development server:
+<p align="center">
+  <img width="600" height="100" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZMoV30MFyP_eiic68gAUwjLfCJIhXFKNumNlLLiJT&s">
+</p>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+<p align="center">
+   [<b>Tractian</b> Front End Software Engineer Challenge.](https://tractian.notion.site/Front-End-Software-Engineer-cf7f9a91d97647abaf99b2565f8ae8fa)
+</p>
+<hr />
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To view my code in action please access: https://tractian-front-end-challenge-mauve.vercel.app/
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+The application is fully responsive and was made to have the most features and most useful features in seven days based on the parameters of this challenge, anything that is not "perfect" its because of a combination of this and the [GEAR framework](https://gear.tractian.com/the-gear-framework-tractians-agile-engineering-culture-e0736c6c2384).
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+I am treating the data available from the APIs by the size they actually have, this is NOT an oversight, when the database grows and the application starts to loose performance we must update the APIs to recieve query params that represent filters that will help our application to fetch only what is needed.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Any information can be edited, but those changes do not persist because there are no POST/PATCH APIs, its just a mock.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Any question about any feature, component or why something was made the way it is, please dont hesitate to contact me.
 
-## Learn More
+# Reaching out to me
+You can contact me via my [Email](mailto:jp.grimaldi@hotmail.com) or through my [Linkedin](https://www.linkedin.com/in/jpgrima)
 
-To learn more about Next.js, take a look at the following resources:
+ # How to run the application (Production)
+ 1. Clone the project using **git clone**. 
+ 2.  With a terminal running inside the project folder run  **yarn** to install the dependencies.
+ 3.  After installing the dependencies run  **yarn build**.
+ 4.  After building the application you can run **yarn start** then open  [http://localhost:3000/](http://localhost:3000/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+  # How to run the application (Debug)
+ 1. Clone the project using **git clone**. 
+ 2.  With a terminal running inside the project folder run  **yarn** to install the dependencies.
+ 3.  After installing the dependencies run  **yarn dev**.
+ 4.  Now that the app is running open  [http://localhost:3000/](http://localhost:3000/)
